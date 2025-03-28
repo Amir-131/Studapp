@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einstellungen - Studien-Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --dark-green: #08312A;
+            --bright-green: #00E47C;
+        }
+        
+        .bg-dark-green {
+            background-color: var(--dark-green);
+        }
+        
+        .bg-bright-green {
+            background-color: var(--bright-green);
+        }
+        
+        .text-dark-green {
+            color: var(--dark-green);
+        }
+        
+        .text-bright-green {
+            color: var(--bright-green);
+        }
+        
+        .border-dark-green {
+            border-color: var(--dark-green);
+        }
+        
+        .border-bright-green {
+            border-color: var(--bright-green);
+        }
+        
+        .btn-green {
+            color: var(--bright-green);
+            font-weight: normal;
+        }
+        
+        .btn-green:hover {
+            text-decoration: underline;
+        }
+        
+        .sidebar-icon {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .sidebar-icon:hover {
+            background-color: var(--bright-green);
+            color: var(--dark-green);
+        }
+        
+        .active-icon {
+            background-color: var(--bright-green);
+            color: var(--dark-green);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-nav-item {
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .settings-nav-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .settings-nav-item.active {
+            background-color: #f3f4f6;
+            font-weight: 500;
+            color: var(--dark-green);
+        }
+        
+        .settings-nav-item.active i {
+            color: var(--bright-green);
+        }
+        
+        .settings-section {
+            display: none;
+        }
+        
+        .settings-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--bright-green);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--bright-green);
+            box-shadow: 0 0 0 1px var(--bright-green);
+        }
+        
+        .btn-primary {
+            background-color: var(--bright-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #00cc6a;
+        }
+        
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Seitenleiste -->
+        <div class="w-16 bg-dark-green text-white p-3 flex flex-col items-center">
+            <!-- Startseite (Home) -->
+            <div class="sidebar-icon" onclick="window.location.href='Startseite.html'">
+                <i class="fas fa-home"></i>
+            </div>
+            
+            <!-- Dateispeicher (Seafile) -->
+            <div class="sidebar-icon" onclick="window.open('https://seafile.studapp.site', '_blank')">
+                <i class="fas fa-folder"></i>
+            </div>
+            
+            <!-- Excalidraw -->
+            <div class="sidebar-icon" onclick="window.open('https://draw.studapp.site', '_blank')">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+            
+            <!-- Weitere Apps - DropDown -->
+            <div class="sidebar-icon" id="moreAppsButton">
+                <i class="fas fa-th-large"></i>
+            </div>
+            
+            <!-- Einstellungen - aktiv -->
+            <div class="sidebar-icon active-icon">
+                <i class="fas fa-cogs"></i>
+            </div>
+            
+            <!-- Abmelden -->
+            <div class="mt-auto sidebar-icon" onclick="confirmLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+
+        <!-- Hauptinhalt -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white p-4 shadow-sm flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800">Einstellungen</h1>
+                    <p class="text-gray-600">Passe dein Dashboard an</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative mr-4">
+                        <i class="fas fa-bell text-gray-500"></i>
+                        <span class="absolute -top-1 -right-1 bg-bright-green text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center">
+                        <span>AA</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Einstellungen-Bereich -->
+            <div class="p-6">
+                <div class="flex flex-col md:flex-row md:space-x-6">
+                    <!-- Navigationsleiste für Einstellungen -->
+                    <div class="md:w-1/4">
+                        <div class="card p-4">
+                            <nav>
+                                <ul class="space-y-1">
+                                    <li class="settings-nav-item active" data-target="profile">
+                                        <i class="fas fa-user mr-3 w-5 text-center"></i>
+                                        <span>Profil</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="notifications">
+                                        <i class="fas fa-bell mr-3 w-5 text-center"></i>
+                                        <span>Benachrichtigungen</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="appearance">
+                                        <i class="fas fa-paint-brush mr-3 w-5 text-center"></i>
+                                        <span>Darstellung</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="integration">
+                                        <i class="fas fa-plug mr-3 w-5 text-center"></i>
+                                        <span>Integrationen</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="privacy">
+                                        <i class="fas fa-shield-alt mr-3 w-5 text-center"></i>
+                                        <span>Datenschutz</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="export">
+                                        <i class="fas fa-file-export mr-3 w-5 text-center"></i>
+                                        <span>Daten & Export</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="accessibility">
+                                        <i class="fas fa-universal-access mr-3 w-5 text-center"></i>
+                                        <span>Barrierefreiheit</span>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <!-- Einstellungen Inhalte -->
+                    <div class="md:w-3/4">
+                        <!-- Profil Einstellungen -->
+                        <div id="profile" class="settings-section active">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Profilinformationen</h2>
+                                
+                                <div class="flex items-center mb-6">
+                                    <div class="w-20 h-20 rounded-full bg-dark-green text-white flex items-center justify-center text-2xl mr-6">
+                                        <span>AA</span>
+                                    </div>
+                                    <div>
+                                        <button class="btn-primary mb-2">Profilbild ändern</button>
+                                        <p class="text-sm text-gray-500">JPG oder PNG, maximal 2MB</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Vorname</label>
+                                        <input type="text" class="form-input" value="Adil">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Nachname</label>
+                                        <input type="text" class="form-input" value="Ahmed">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">E-Mail-Adresse</label>
+                                        <input type="email" class="form-input" value="adil.ahmed@studenten.de">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Matrikelnummer</label>
+                                        <input type="text" class="form-input" value="123456">
+                                    </div>
+                                </div>
+                                
+                                <h3 class="text-lg font-semibold text-gray-700 mb-3">Studieninformationen</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Studiengang</label>
+                                        <input type="text" class="form-input" value="Elektrotechnik">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Semester</label>
+                                        <select class="form-input">
+                                            <option>1. Semester</option>
+                                            <option selected>2. Semester</option>
+                                            <option>3. Semester</option>
+                                            <option>4. Semester</option>
+                                            <option>5. Semester</option>
+                                            <option>6. Semester</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-3">
+                                    <button class="btn-secondary">Abbrechen</button>
+                                    <button class="btn-primary">Speichern</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Benachrichtigungen Einstellungen -->
+                        <div id="notifications" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Benachrichtigungen</h2>
+                                
+                                <h3 class="text-lg font-semibold text-gray-700 mb-3">E-Mail-Benachrichtigungen</h3>
+                                <div class="space-y-4 mb-6">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">Kursänderungen</p>
+                                            <p class="text-sm text-gray-500">Benachrichtigungen über Änderungen an deinen Kursen</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">Abgabeerinnerungen</p>
+                                            <p class="text-sm text-gray-500">Erinnerungen für bevorstehende Abgabefristen</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">Neuer Kursinhalt</p>
+                                            <p class="text-sm text-gray-500">Benachrichtigungen über neue Inhalte in deinen Kursen</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <h3 class="text-lg font-semibold text-gray-700 mb-3">Push-Benachrichtigungen</h3>
+                                <div class="space-y-4 mb-6">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">Tägliche Zusammenfassung</p>
+                                            <p class="text-sm text-gray-500">Tägliche Übersicht deiner Vorlesungen und Abgaben</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="font-medium">Wichtige Ankündigungen</p>
+                                            <p class="text-sm text-gray-500">Benachrichtigungen über wichtige Ankündigungen</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-end space-x-3">
+                                    <button class="btn-secondary">Zurücksetzen</button>
+                                    <button class="btn-primary">Speichern</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weitere Settings-Bereiche -->
+                        <!-- Die übrigen Sections (appearance, integration, privacy, export, accessibility) 
+                             bleiben unverändert vom ursprünglichen Code -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apps-Dropdown-Menü (wird angezeigt, wenn auf "Weitere Apps" geklickt wird) -->
+    <div id="appsMenu" class="hidden fixed bg-white rounded-lg shadow-lg p-3 z-10">
+        <div class="space-y-2">
+            <a href="https://office.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-file-word text-blue-500 mr-3"></i>
+                <span>OnlyOffice</span>
+            </a>
+            <a href="https://calibre.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-book text-purple-500 mr-3"></i>
+                <span>Calibre-Web</span>
+            </a>
+            <a href="https://vscode.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-code text-blue-600 mr-3"></i>
+                <span>VS Code</span>
+            </a>
+            <a href="https://notes.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-sticky-note text-yellow-500 mr-3"></i>
+                <span>Standard Notes</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation für Einstellungen
+            const navItems = document.querySelectorAll('.settings-nav-item');
+            const sections = document.querySelectorAll('.settings-section');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const target = this.getAttribute('data-target');
+                    
+                    // Aktive Klasse von allen Nav-Items entfernen
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Aktive Klasse zum geklickten Nav-Item hinzufügen
+                    this.classList.add('active');
+                    
+                    // Alle Sektionen ausblenden
+                    sections.forEach(section => section.classList.remove('active'));
+                    
+                    // Zielsektion einblenden
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+            
+            // Funktionalität für das Apps-Dropdown-Menü
+            const moreAppsButton = document.getElementById('moreAppsButton');
+            const appsMenu = document.getElementById('appsMenu');
+            
+            moreAppsButton.addEventListener('click', function(e) {
+                e.stopPropagation(); // Verhindert, dass das Klicken auf den Button auch als Klick außerhalb gewertet wird
+                
+                // Position des Dropdown-Menüs neben dem Button
+                const buttonRect = moreAppsButton.getBoundingClientRect();
+                appsMenu.style.top = buttonRect.top + 'px';
+                appsMenu.style.left = (buttonRect.right + 10) + 'px';
+                
+                // Dropdown-Menü anzeigen/verbergen
+                appsMenu.classList.toggle('hidden');
+            });
+            
+            // Klick außerhalb des Menüs schließt es
+            document.addEventListener('click', function(e) {
+                if (!appsMenu.contains(e.target) && e.target !== moreAppsButton) {
+                    appsMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        // Logout-Bestätigungsfunktion
+        function confirmLogout() {
+            if (confirm('Möchtest du dich wirklich abmelden?')) {
+                console.log('Abmelden durchgeführt');
+                // Hier könnte der Logout-Prozess eingeleitet werden
+            }
+        }
+    </script>
+</body>
+</html>

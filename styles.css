@@ -1,0 +1,38 @@
+:root {
+    --dark-green: #08312A;
+    --bright-green: #00E47C;
+}
+
+.bg-dark-green {
+    background-color: var(--dark-green);
+}
+
+.bg-bright-green {
+    background-color: var(--bright-green);
+}
+
+/* Other shared styles from your previous implementations */
+
+.sidebar-icon {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.sidebar-icon:hover {
+    background-color: var(--bright-green);
+    color: var(--dark-green);
+}
+
+.active-icon {
+    background-color: var(--bright-green);
+    color: var(--dark-green);
+}
+
+/* Rest of your shared styles */

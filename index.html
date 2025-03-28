@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studien-Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Seitenleiste -->
+        <div class="w-16 bg-dark-green text-white p-3 flex flex-col items-center">
+            <!-- Startseite -->
+            <div id="homeButton" class="sidebar-icon active-icon" data-page="Startseite.html">
+                <i class="fas fa-home"></i>
+            </div>
+            
+            <!-- Dateispeicher (Seafile) -->
+            <div class="sidebar-icon" data-page="https://seafile.studapp.site">
+                <i class="fas fa-folder"></i>
+            </div>
+            
+            <!-- Excalidraw -->
+            <div class="sidebar-icon" data-page="https://draw.studapp.site">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+            
+            <!-- Weitere Apps (hier verwenden wir das Buch-Icon) -->
+            <div class="sidebar-icon" data-page="moreapps">
+                <i class="fas fa-th-large"></i>
+            </div>
+            
+            <!-- Einstellungen -->
+            <div id="settingsButton" class="sidebar-icon" data-page="Einstellungen.html">
+                <i class="fas fa-cogs"></i>
+            </div>
+            
+            <!-- Logout -->
+            <div class="mt-auto sidebar-icon" data-page="logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+
+        <!-- Main content container that will be dynamically updated -->
+        <div id="content-container" class="flex-1 overflow-y-auto">
+            <!-- Content will be loaded here dynamically -->
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Diese Funktion fügt zusätzliche Funktionalität zum vorhandenen app.js hinzu
+        document.addEventListener('DOMContentLoaded', function() {
+            const navigationButtons = document.querySelectorAll('.sidebar-icon[data-page]');
+            
+            navigationButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const pageUrl = this.getAttribute('data-page');
+                    
+                    // Behandeln externer URLs
+                    if (pageUrl.startsWith('http')) {
+                        window.open(pageUrl, '_blank');
+                        return;
+                    }
+                    
+                    // Behandlung für "weitere Apps" Button
+                    if (pageUrl === 'moreapps') {
+                        showMoreAppsMenu(this);
+                        return;
+                    }
+                    
+                    // Behandlung für Logout
+                    if (pageUrl === 'logout') {
+                        if (confirm('Möchtest du dich wirklich abmelden?')) {
+                            console.log('Abmelden durchgeführt');
+                            // Hier könnte tatsächliches Logout erfolgen
+                        }
+                        return;
+                    }
+                });
+            });
+            
+            // Funktion für Anzeige des Dropdown-Menüs bei "weitere Apps"
+            function showMoreAppsMenu(buttonElement) {
+                // Prüfen, ob das Menü bereits existiert
+                let appsMenu = document.getElementById('moreAppsMenu');
+                
+                // Wenn das Menü bereits existiert, Toggle anzeigen/verstecken
+                if (appsMenu) {
+                    appsMenu.remove();
+                    return;
+                }
+                
+                // Menü erstellen
+                appsMenu = document.createElement('div');
+                appsMenu.id = 'moreAppsMenu';
+                appsMenu.className = 'absolute bg-white rounded-lg shadow-lg p-3 z-10';
+                appsMenu.style.left = '70px';
+                appsMenu.style.top = (buttonElement.offsetTop + 20) + 'px';
+                
+                // Menüpunkte hinzufügen
+                const menuItems = [
+                    { name: 'OnlyOffice', icon: 'file-word', color: 'blue', url: 'https://office.studapp.site' },
+                    { name: 'Calibre-Web', icon: 'book', color: 'purple', url: 'https://calibre.studapp.site' },
+                    { name: 'VS Code', icon: 'code', color: 'blue', url: 'https://vscode.studapp.site' },
+                    { name: 'Standard Notes', icon: 'sticky-note', color: 'yellow', url: 'https://notes.studapp.site' }
+                ];
+                
+                menuItems.forEach(item => {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.target = '_blank';
+                    link.className = 'flex items-center p-2 hover:bg-gray-100 rounded mb-1 text-gray-800';
+                    
+                    const iconSpan = document.createElement('span');
+                    iconSpan.className = `fas fa-${item.icon} text-${item.color}-500 mr-3`;
+                    
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = item.name;
+                    
+                    link.appendChild(iconSpan);
+                    link.appendChild(textSpan);
+                    appsMenu.appendChild(link);
+                });
+                
+                // Menü zum Body hinzufügen
+                document.body.appendChild(appsMenu);
+                
+                // Klick-Event auf Dokument zum Schließen des Menüs
+                document.addEventListener('click', function closeMenu(e) {
+                    if (!appsMenu.contains(e.target) && e.target !== buttonElement) {
+                        appsMenu.remove();
+                        document.removeEventListener('click', closeMenu);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
