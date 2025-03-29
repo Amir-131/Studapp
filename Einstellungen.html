@@ -195,6 +195,79 @@
         .btn-secondary:hover {
             background-color: #e5e7eb;
         }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        
+        .status-dot.success {
+            background-color: var(--bright-green);
+        }
+        
+        .status-dot.error {
+            background-color: #EF4444;
+        }
+        
+        .status-dot.warning {
+            background-color: #F59E0B;
+        }
+        
+        .status-dot.inactive {
+            background-color: #9CA3AF;
+        }
+
+        .password-input-container {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6B7280;
+        }
+
+        .moodle-status {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .moodle-status.success {
+            background-color: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            color: #047857;
+        }
+
+        .moodle-status.error {
+            background-color: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #B91C1C;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--bright-green);
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -274,6 +347,10 @@
                                     <li class="settings-nav-item" data-target="integration">
                                         <i class="fas fa-plug mr-3 w-5 text-center"></i>
                                         <span>Integrationen</span>
+                                    </li>
+                                    <li class="settings-nav-item" data-target="moodle">
+                                        <i class="fas fa-graduation-cap mr-3 w-5 text-center"></i>
+                                        <span>Moodle-Integration</span>
                                     </li>
                                     <li class="settings-nav-item" data-target="privacy">
                                         <i class="fas fa-shield-alt mr-3 w-5 text-center"></i>
@@ -424,9 +501,130 @@
                             </div>
                         </div>
 
+                        <!-- Moodle-Integration Einstellungen -->
+                        <div id="moodle" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Moodle-Integration</h2>
+                                
+                                <div class="border-b border-gray-200 pb-4 mb-4">
+                                    <div class="flex items-center mb-2">
+                                        <span class="status-dot inactive" id="moodleStatusDot"></span>
+                                        <p class="font-medium text-gray-700">Status: <span id="moodleStatusText">Nicht verbunden</span></p>
+                                    </div>
+                                    <p class="text-sm text-gray-500">
+                                        Verbinde dein Moodle-Konto, um automatisch Kurse, Aufgaben und Abgabefristen zu synchronisieren.
+                                    </p>
+                                </div>
+                                
+                                <form id="moodleForm">
+                                    <div class="space-y-4 mb-6">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Moodle-URL</label>
+                                            <input type="url" id="moodleUrl" class="form-input" value="https://moodle.fh-campuswien.ac.at" placeholder="z.B. https://moodle.deine-hochschule.de">
+                                            <p class="text-xs text-gray-500 mt-1">Die vollständige URL deiner Moodle-Instanz</p>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Benutzername</label>
+                                            <input type="text" id="moodleUsername" class="form-input" placeholder="Moodle-Benutzername oder Matrikelnummer">
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Passwort</label>
+                                            <div class="password-input-container">
+                                                <input type="password" id="moodlePassword" class="form-input pr-10" placeholder="Dein Moodle-Passwort">
+                                                <span class="password-toggle" onclick="togglePasswordVisibility()">
+                                                    <i class="fas fa-eye" id="passwordToggleIcon"></i>
+                                                </span>
+                                            </div>
+                                            <p class="text-xs text-gray-500 mt-1">Dein Passwort wird sicher gespeichert</p>
+                                        </div>
+
+                                        <div class="flex items-center mt-2">
+                                            <label class="switch mr-2">
+                                                <input type="checkbox" id="autoSyncCheckbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="text-sm">Automatische Synchronisierung täglich durchführen</span>
+                                        </div>
+                                    </div>
+
+                                    <div id="moodleStatus" class="moodle-status">
+                                        <!-- Status-Meldungen werden hier dynamisch eingefügt -->
+                                    </div>
+                                    
+                                    <div class="flex justify-end space-x-3 mt-6">
+                                        <button type="button" id="testConnectionBtn" class="btn-secondary">Verbindung testen</button>
+                                        <button type="button" id="syncNowBtn" class="btn-primary">Jetzt synchronisieren</button>
+                                        <button type="submit" class="btn-primary">Speichern</button>
+                                    </div>
+                                </form>
+
+                                <div class="mt-8">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-3">Letzte Synchronisierung</h3>
+                                    <div class="bg-gray-50 p-4 rounded">
+                                        <p id="lastSyncTime" class="text-sm text-gray-500">Noch keine Synchronisierung durchgeführt</p>
+                                        <div id="syncStats" class="grid grid-cols-3 gap-4 mt-4">
+                                            <div class="text-center">
+                                                <p class="text-sm text-gray-500">Kurse</p>
+                                                <p class="text-xl font-semibold text-gray-800">-</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <p class="text-sm text-gray-500">Aufgaben</p>
+                                                <p class="text-xl font-semibold text-gray-800">-</p>
+                                            </div>
+                                            <div class="text-center">
+                                                <p class="text-sm text-gray-500">Überfällig</p>
+                                                <p class="text-xl font-semibold text-gray-800">-</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Weitere Settings-Bereiche -->
                         <!-- Die übrigen Sections (appearance, integration, privacy, export, accessibility) 
                              bleiben unverändert vom ursprünglichen Code -->
+                        <div id="appearance" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Darstellung</h2>
+                                <!-- Platzhalter für den Darstellungs-Bereich -->
+                                <p class="text-gray-500">Hier können Darstellungseinstellungen konfiguriert werden.</p>
+                            </div>
+                        </div>
+
+                        <div id="integration" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Integrationen</h2>
+                                <!-- Platzhalter für den Integrationen-Bereich -->
+                                <p class="text-gray-500">Hier können andere Dienste verbunden werden.</p>
+                            </div>
+                        </div>
+
+                        <div id="privacy" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Datenschutz</h2>
+                                <!-- Platzhalter für den Datenschutz-Bereich -->
+                                <p class="text-gray-500">Hier können Datenschutzeinstellungen konfiguriert werden.</p>
+                            </div>
+                        </div>
+
+                        <div id="export" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Daten & Export</h2>
+                                <!-- Platzhalter für den Export-Bereich -->
+                                <p class="text-gray-500">Hier können Daten exportiert werden.</p>
+                            </div>
+                        </div>
+
+                        <div id="accessibility" class="settings-section">
+                            <div class="card p-6">
+                                <h2 class="text-xl font-semibold text-gray-800 mb-4">Barrierefreiheit</h2>
+                                <!-- Platzhalter für den Barrierefreiheit-Bereich -->
+                                <p class="text-gray-500">Hier können Barrierefreiheit-Einstellungen konfiguriert werden.</p>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -502,6 +700,33 @@
                     appsMenu.classList.add('hidden');
                 }
             });
+
+            // Moodle Integration Funktionalität
+            const moodleForm = document.getElementById('moodleForm');
+            const testConnectionBtn = document.getElementById('testConnectionBtn');
+            const syncNowBtn = document.getElementById('syncNowBtn');
+            const moodleStatus = document.getElementById('moodleStatus');
+            const moodleStatusDot = document.getElementById('moodleStatusDot');
+            const moodleStatusText = document.getElementById('moodleStatusText');
+
+            // Formular absenden
+            moodleForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveMoodleCredentials();
+            });
+
+            // Test-Verbindung
+            testConnectionBtn.addEventListener('click', function() {
+                testMoodleConnection();
+            });
+
+            // Sofortige Synchronisierung
+            syncNowBtn.addEventListener('click', function() {
+                syncMoodleData();
+            });
+
+            // Lade gespeicherte Daten beim Start
+            loadSavedMoodleData();
         });
         
         // Logout-Bestätigungsfunktion
@@ -509,6 +734,203 @@
             if (confirm('Möchtest du dich wirklich abmelden?')) {
                 console.log('Abmelden durchgeführt');
                 // Hier könnte der Logout-Prozess eingeleitet werden
+            }
+        }
+
+        // Moodle Integration Funktionen
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('moodlePassword');
+            const toggleIcon = document.getElementById('passwordToggleIcon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        function saveMoodleCredentials() {
+            const url = document.getElementById('moodleUrl').value;
+            const username = document.getElementById('moodleUsername').value;
+            const password = document.getElementById('moodlePassword').value;
+            const autoSync = document.getElementById('autoSyncCheckbox').checked;
+            
+            if (!url || !username || !password) {
+                showMoodleStatus('error', 'Bitte fülle alle Felder aus.');
+                return;
+            }
+            
+            // Hier würden die Daten normalerweise verschlüsselt im LocalStorage gespeichert
+            // oder an einen Server gesendet werden
+            localStorage.setItem('moodleUrl', url);
+            localStorage.setItem('moodleUsername', username);
+            // In einer echten App sollte das Passwort NIE unverschlüsselt gespeichert werden!
+            localStorage.setItem('moodlePassword', password);
+            localStorage.setItem('moodleAutoSync', autoSync);
+            
+            updateMoodleStatus('success');
+            showMoodleStatus('success', 'Moodle-Zugangsdaten wurden gespeichert.');
+            
+            // Synchronisiere Daten nach dem Speichern
+            syncMoodleData();
+        }
+
+        function loadSavedMoodleData() {
+            const url = localStorage.getItem('moodleUrl');
+            const username = localStorage.getItem('moodleUsername');
+            const password = localStorage.getItem('moodlePassword');
+            const autoSync = localStorage.getItem('moodleAutoSync');
+            const lastSync = localStorage.getItem('moodleLastSync');
+            
+            if (url) document.getElementById('moodleUrl').value = url;
+            if (username) document.getElementById('moodleUsername').value = username;
+            if (password) document.getElementById('moodlePassword').value = password;
+            if (autoSync !== null) document.getElementById('autoSyncCheckbox').checked = autoSync === 'true';
+            
+            // Wenn Daten vorhanden sind, aktualisiere den Status
+            if (url && username && password) {
+                updateMoodleStatus('success');
+            }
+            
+            // Zeige letzte Synchronisierung
+            if (lastSync) {
+                document.getElementById('lastSyncTime').textContent = `Letzte Synchronisierung: ${lastSync}`;
+                
+                // Zeige Statistiken an, wenn vorhanden
+                const courseCount = localStorage.getItem('moodleCourseCount') || '-';
+                const assignmentCount = localStorage.getItem('moodleAssignmentCount') || '-';
+                const overdueCount = localStorage.getItem('moodleOverdueCount') || '-';
+                
+                const syncStats = document.getElementById('syncStats');
+                syncStats.children[0].querySelector('.text-xl').textContent = courseCount;
+                syncStats.children[1].querySelector('.text-xl').textContent = assignmentCount;
+                syncStats.children[2].querySelector('.text-xl').textContent = overdueCount;
+            }
+        }
+
+        function testMoodleConnection() {
+            const url = document.getElementById('moodleUrl').value;
+            const username = document.getElementById('moodleUsername').value;
+            const password = document.getElementById('moodlePassword').value;
+            
+            if (!url || !username || !password) {
+                showMoodleStatus('error', 'Bitte fülle alle Felder aus.');
+                return;
+            }
+            
+            showMoodleStatus('pending', 'Verbindung wird getestet...');
+            
+            // Simuliere einen API-Aufruf
+            setTimeout(() => {
+                // Hier würde normalerweise ein echter API-Aufruf stattfinden
+                const success = Math.random() > 0.3; // 70% Erfolgswahrscheinlichkeit für die Demo
+                
+                if (success) {
+                    updateMoodleStatus('success');
+                    showMoodleStatus('success', 'Verbindung erfolgreich hergestellt!');
+                } else {
+                    updateMoodleStatus('error');
+                    showMoodleStatus('error', 'Verbindung fehlgeschlagen. Bitte überprüfe deine Zugangsdaten.');
+                }
+            }, 1500);
+        }
+
+        function syncMoodleData() {
+            const url = document.getElementById('moodleUrl').value;
+            const username = document.getElementById('moodleUsername').value;
+            const password = document.getElementById('moodlePassword').value;
+            
+            if (!url || !username || !password) {
+                showMoodleStatus('error', 'Bitte fülle alle Felder aus und speichere sie, bevor du synchronisierst.');
+                return;
+            }
+            
+            showMoodleStatus('pending', 'Synchronisierung läuft...');
+            
+            // Simuliere einen API-Aufruf
+            setTimeout(() => {
+                // Hier würde normalerweise ein echter API-Aufruf stattfinden
+                const success = Math.random() > 0.2; // 80% Erfolgswahrscheinlichkeit für die Demo
+                
+                if (success) {
+                    // Simuliere Ergebnisse
+                    const courseCount = Math.floor(Math.random() * 10) + 5;
+                    const assignmentCount = Math.floor(Math.random() * 20) + 10;
+                    const overdueCount = Math.floor(Math.random() * 5);
+                    
+                    // Speichere die Ergebnisse
+                    const now = new Date().toLocaleString();
+                    localStorage.setItem('moodleLastSync', now);
+                    localStorage.setItem('moodleCourseCount', courseCount);
+                    localStorage.setItem('moodleAssignmentCount', assignmentCount);
+                    localStorage.setItem('moodleOverdueCount', overdueCount);
+                    
+                    // Aktualisiere die Anzeige
+                    document.getElementById('lastSyncTime').textContent = `Letzte Synchronisierung: ${now}`;
+                    
+                    const syncStats = document.getElementById('syncStats');
+                    syncStats.children[0].querySelector('.text-xl').textContent = courseCount;
+                    syncStats.children[1].querySelector('.text-xl').textContent = assignmentCount;
+                    syncStats.children[2].querySelector('.text-xl').textContent = overdueCount;
+                    
+                    updateMoodleStatus('success');
+                    showMoodleStatus('success', `Synchronisierung erfolgreich! ${courseCount} Kurse, ${assignmentCount} Aufgaben und ${overdueCount} überfällige Abgaben gefunden.`);
+                } else {
+                    updateMoodleStatus('error');
+                    showMoodleStatus('error', 'Synchronisierung fehlgeschlagen. Bitte versuche es später erneut.');
+                }
+            }, 2500);
+        }
+
+        function showMoodleStatus(type, message) {
+            const statusElement = document.getElementById('moodleStatus');
+            statusElement.innerHTML = '';
+            statusElement.classList.remove('success', 'error');
+            
+            if (type === 'pending') {
+                const spinner = document.createElement('span');
+                spinner.className = 'spinner';
+                
+                const messageSpan = document.createElement('span');
+                messageSpan.textContent = message;
+                
+                statusElement.classList.add('success');
+                statusElement.appendChild(spinner);
+                statusElement.appendChild(messageSpan);
+            } else {
+                statusElement.classList.add(type);
+                statusElement.textContent = message;
+            }
+            
+            statusElement.style.display = 'block';
+        }
+
+        function updateMoodleStatus(status) {
+            const statusDot = document.getElementById('moodleStatusDot');
+            const statusText = document.getElementById('moodleStatusText');
+            
+            statusDot.classList.remove('success', 'error', 'warning', 'inactive');
+            
+            switch (status) {
+                case 'success':
+                    statusDot.classList.add('success');
+                    statusText.textContent = 'Verbunden';
+                    break;
+                case 'error':
+                    statusDot.classList.add('error');
+                    statusText.textContent = 'Fehler bei der Verbindung';
+                    break;
+                case 'warning':
+                    statusDot.classList.add('warning');
+                    statusText.textContent = 'Verbindungsprobleme';
+                    break;
+                default:
+                    statusDot.classList.add('inactive');
+                    statusText.textContent = 'Nicht verbunden';
             }
         }
     </script>
