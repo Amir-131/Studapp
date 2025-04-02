@@ -1,316 +1,729 @@
-<!-- Startseite.html - nur der Inhaltsbereich, keine komplette HTML-Seite -->
-
-<!-- Header -->
-<header class="bg-white p-4 shadow-sm flex justify-between items-center">
-    <div>
-        <h1 class="text-2xl font-semibold text-gray-800">Mein Dashboard</h1>
-        <p class="text-gray-600">Willkommen zurück, Adil!</p>
-    </div>
-    <div class="flex items-center">
-        <div class="relative mr-4">
-            <i class="fas fa-bell text-gray-500"></i>
-            <span class="absolute -top-1 -right-1 bg-bright-green text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">3</span>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center">
-            <span>AA</span>
-        </div>
-    </div>
-</header>
-
-<!-- Dashboard-Inhalt -->
-<div class="p-6">
-    <!-- Willkommensnachricht mit Details zum Aufklappen -->
-    <div class="welcome-widget p-6 mb-6 rounded-lg shadow" id="welcomeWidget">
-        <div>
-            <h2 class="text-xl font-semibold mb-2 text-white">Guten Tag, Adil!</h2>
-            <p class="text-white">Du hast heute 3 Vorlesungen und 1 Abgabe in Elektrotechnik.</p>
-        </div>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mein Studien-Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --dark-green: #08312A;
+            --bright-green: #00E47C;
+        }
         
-        <div class="welcome-details">
-            <h3 class="font-semibold mb-3 text-white">Heutige Vorlesungen:</h3>
-            <div class="space-y-2">
-                <div class="detail-item">
-                    <i class="fas fa-bolt text-white mr-3"></i>
-                    <div>
-                        <p class="font-medium text-white">Grundlagen der Elektrotechnik</p>
-                        <p class="text-sm opacity-80 text-white">09:00 - 10:30, Raum E2.12</p>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-calculator text-white mr-3"></i>
-                    <div>
-                        <p class="font-medium text-white">Mathematik</p>
-                        <p class="text-sm opacity-80 text-white">11:00 - 12:30, Raum A1.03</p>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-code text-white mr-3"></i>
-                    <div>
-                        <p class="font-medium text-white">C-Programmierung</p>
-                        <p class="text-sm opacity-80 text-white">14:00 - 15:30, PC-Labor C</p>
-                    </div>
-                </div>
+        /* BASIS-FARBEN */
+        .bg-dark-green {
+            background-color: var(--dark-green);
+        }
+        
+        .bg-bright-green {
+            background-color: var(--bright-green);
+        }
+        
+        .text-dark-green {
+            color: var(--dark-green);
+        }
+        
+        .text-bright-green {
+            color: var(--bright-green);
+        }
+        
+        /* ENTFERNE ALLE TRANSITIONS VON BASIS-ELEMENTEN */
+        * {
+            transition-property: none;
+        }
+        
+        /* HEADER FIXIEREN - keine Farbwechsel beim Hover */
+        header, header div, header h1, header p {
+            transition: none !important;
+            transform: none !important;
+            animation: none !important;
+        }
+        
+        header h1, header p {
+            color: inherit !important;
+        }
+        
+        header h1:hover, header p:hover {
+            color: inherit !important;
+        }
+        
+        /* ÜBERSCHRIFTEN OHNE ANIMATION */
+        h1, h2, h3, h4, h5, h6,
+        .text-lg, .text-xl, .text-2xl, .font-semibold,
+        .welcome-widget h2, .welcome-widget h3, .welcome-widget p,
+        .card h3, .flex.justify-between h3 {
+            transition: none !important;
+            transform: none !important;
+            animation: none !important;
+        }
+        
+        h1:hover, h2:hover, h3:hover, h4:hover, h5:hover, h6:hover,
+        .text-lg:hover, .text-xl:hover, .text-2xl:hover, .font-semibold:hover,
+        .welcome-widget h2:hover, .welcome-widget h3:hover, .welcome-widget p:hover,
+        .card h3:hover, .flex.justify-between h3:hover {
+            transform: none !important;
+            animation: none !important;
+            background-color: transparent !important;
+            color: inherit !important;
+        }
+        
+        /* WILLKOMMEN ZURÜCK FARBFIXIERUNG */
+        header p {
+            color: #4b5563 !important; /* text-gray-600 Äquivalent */
+        }
+        
+        header p:hover {
+            color: #4b5563 !important;
+        }
+        
+        /* GRÜNE BOX TEXT IMMER WEISS */
+        .welcome-widget h2, .welcome-widget p,
+        .welcome-widget h3, .welcome-widget .font-medium,
+        .welcome-widget .text-white {
+            color: white !important;
+        }
+        
+        .welcome-widget h2:hover, .welcome-widget p:hover,
+        .welcome-widget h3:hover, .welcome-widget .font-medium:hover,
+        .welcome-widget .text-white:hover {
+            color: white !important;
+        }
+        
+        /* KARTENÜBERSCHRIFTEN OHNE ANIMATION */
+        .card .flex.justify-between .text-lg,
+        .card .flex.justify-between .font-semibold {
+            transition: none !important;
+            color: #1f2937 !important; /* text-gray-800 Äquivalent */
+        }
+        
+        .card .flex.justify-between .text-lg:hover,
+        .card .flex.justify-between .font-semibold:hover {
+            transition: none !important;
+            transform: none !important;
+            color: #1f2937 !important;
+            background-color: transparent !important;
+        }
+        
+        /* SEITENLEISTE OHNE ANIMATION */
+        .sidebar-icon {
+            height: 40px;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+        }
+        
+        .sidebar-icon:hover {
+            background-color: var(--bright-green);
+            color: var(--dark-green);
+            transition: none !important;
+            animation: none !important;
+            transform: none !important;
+        }
+        
+        .active-icon {
+            background-color: var(--bright-green);
+            color: var(--dark-green);
+        }
+        
+        /* BUTTONS OHNE ANIMATION */
+        .btn-green {
+            color: var(--bright-green);
+            font-weight: normal;
+            transition: none !important;
+        }
+        
+        .btn-green:hover {
+            text-decoration: underline;
+            transition: none !important;
+        }
+        
+        /* KARTEN OHNE ANIMATION */
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            transition: none !important;
+        }
+        
+        /* WILLKOMMENSWIDGET OHNE ANIMATION */
+        .welcome-widget {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--dark-green);
+            transition: none !important;
+        }
+        
+        .welcome-details {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            margin-top: 0.5rem;
+            transition: none !important;
+        }
+        
+        .welcome-widget.expanded .welcome-details {
+            max-height: 500px;
+            opacity: 1;
+            transition: none !important;
+        }
+        
+        /* VERSTECKTE KURSE MIT SANFTER ANIMATION */
+        .hidden-courses {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out !important;
+        }
+        
+        .hidden-courses.expanded {
+            max-height: 500px;
+            opacity: 1;
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out !important;
+        }
+        
+        /* AB HIER ALLE INTERAKTIVEN ANIMATIONEN AKTIVIEREN */
+        
+        /* Detail-Items MIT Animation */
+        .detail-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .detail-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding-left: 5px;
+        }
+        
+        /* Kurseinträge MIT Animation */
+        .course-item {
+            display: flex;
+            padding: 1rem 0;
+            transition: all 0.2s ease;
+            border-radius: 5px;
+        }
+        
+        .course-item:hover {
+            background-color: #f3f4f6;
+            padding-left: 5px;
+        }
+        
+        .course-icon {
+            width: 32px;
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .course-item:hover .course-icon {
+            transform: scale(1.2);
+        }
+        
+        .course-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Task Items MIT Animation */
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            transition: all 0.2s ease;
+            border-radius: 5px;
+        }
+        
+        .task-item:hover {
+            background-color: #f3f4f6;
+            padding-left: 10px;
+            padding-right: 5px;
+        }
+        
+        .task-in-progress {
+            border-left: 4px solid #f97316;
+            padding-left: 1rem;
+        }
+        
+        .task-priority {
+            border-left: 4px solid #00E47C;
+            padding-left: 1rem;
+        }
+        
+        .task-planned {
+            border-left: 4px solid transparent;
+            padding-left: 1rem;
+        }
+        
+        .task-done {
+            border-left: 4px solid #08312A;
+            padding-left: 1rem;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            color: #4b5563;
+            text-align: right;
+        }
+        
+        /* Listen-Elemente MIT Animation - aber nur innerhalb der Karten */
+        .card .flex.items-center:not(.mb-4):not(.justify-between), 
+        .card .flex.p-2:not(.mb-4):not(.justify-between),
+        li.flex {
+            transition: all 0.2s ease;
+            border-radius: 5px;
+        }
+        
+        .card .flex.items-center:not(.mb-4):not(.justify-between):hover, 
+        .card .flex.p-2:not(.mb-4):not(.justify-between):hover,
+        li.flex:hover {
+            background-color: #f3f4f6;
+            transform: translateX(5px);
+        }
+        
+        /* App-Menü MIT Animation */
+        #appsMenu a {
+            transition: all 0.2s ease;
+        }
+        
+        #appsMenu a:hover {
+            transform: translateX(5px);
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen">
+        <!-- Seitenleiste -->
+        <div class="w-16 bg-dark-green text-white p-3 flex flex-col items-center">
+            <!-- Startseite (Home) - aktiv -->
+            <div class="sidebar-icon bg-bright-green text-dark-green mb-6">
+                <i class="fas fa-home"></i>
             </div>
             
-            <h3 class="font-semibold mt-4 mb-3 text-white">Fällige Abgabe:</h3>
-            <div class="detail-item bg-white bg-opacity-10 p-3 rounded">
-                <i class="fas fa-exclamation-circle text-white mr-3"></i>
+            <!-- Dateispeicher (Seafile) -->
+            <div class="sidebar-icon" onclick="window.open('https://seafile.studapp.site', '_blank')">
+                <i class="fas fa-folder"></i>
+            </div>
+            
+            <!-- Excalidraw -->
+            <div class="sidebar-icon" onclick="window.open('https://draw.studapp.site', '_blank')">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+            
+            <!-- Weitere Apps - DropDown -->
+            <div class="sidebar-icon" id="moreAppsButton">
+                <i class="fas fa-th-large"></i>
+            </div>
+            
+            <!-- Einstellungen -->
+            <div class="sidebar-icon" onclick="window.location.href='Einstellungen.html'">
+                <i class="fas fa-cogs"></i>
+            </div>
+            
+            <!-- Abmelden -->
+            <div class="mt-auto sidebar-icon" onclick="confirmLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+
+        <!-- Hauptinhalt -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white p-4 shadow-sm flex justify-between items-center">
                 <div>
-                    <p class="font-medium text-white">Elektrotechnik Übungsblatt 4</p>
-                    <p class="text-sm opacity-80 text-white">Heute, 23:59 Uhr</p>
+                    <h1 class="text-2xl font-semibold text-gray-800">Mein Dashboard</h1>
+                    <p class="text-gray-600">Willkommen zurück, Adil!</p>
+                </div>
+                <div class="flex items-center">
+                    <div class="relative mr-4">
+                        <i class="fas fa-bell text-gray-500"></i>
+                        <span class="absolute -top-1 -right-1 bg-bright-green text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-dark-green text-white flex items-center justify-center">
+                        <span>AA</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard-Inhalt -->
+            <div class="p-6">
+                <!-- Willkommensnachricht mit Details zum Aufklappen -->
+                <div class="welcome-widget p-6 mb-6 rounded-lg shadow" id="welcomeWidget">
+                    <div>
+                        <h2 class="text-xl font-semibold mb-2 text-white">Guten Tag, Adil!</h2>
+                        <p class="text-white">Du hast heute 3 Vorlesungen und 1 Abgabe in Elektrotechnik.</p>
+                    </div>
+                    
+                    <div class="welcome-details">
+                        <h3 class="font-semibold mb-3 text-white">Heutige Vorlesungen:</h3>
+                        <div class="space-y-2">
+                            <div class="detail-item">
+                                <i class="fas fa-bolt text-white mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-white">Grundlagen der Elektrotechnik</p>
+                                    <p class="text-sm opacity-80 text-white">09:00 - 10:30, Raum E2.12</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-calculator text-white mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-white">Mathematik</p>
+                                    <p class="text-sm opacity-80 text-white">11:00 - 12:30, Raum A1.03</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-code text-white mr-3"></i>
+                                <div>
+                                    <p class="font-medium text-white">C-Programmierung</p>
+                                    <p class="text-sm opacity-80 text-white">14:00 - 15:30, PC-Labor C</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="font-semibold mt-4 mb-3 text-white">Fällige Abgabe:</h3>
+                        <div class="detail-item bg-white bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-exclamation-circle text-white mr-3"></i>
+                            <div>
+                                <p class="font-medium text-white">Elektrotechnik Übungsblatt 4</p>
+                                <p class="text-sm opacity-80 text-white">Heute, 23:59 Uhr</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget-Reihe 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- Zuletzt verwendete Dateien -->
+                    <div class="card p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Zuletzt verwendet</h3>
+                            <button class="btn-green">Alle anzeigen</button>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center p-2">
+                                <i class="fas fa-file-pdf text-dark-green mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium">ET_Übung_4.pdf</p>
+                                    <p class="text-xs text-gray-500">Bearbeitet: Heute, 14:30</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center p-2">
+                                <i class="fas fa-file-word text-dark-green mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium">Laborprotokoll.docx</p>
+                                    <p class="text-xs text-gray-500">Bearbeitet: Gestern, 16:42</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center p-2">
+                                <i class="fas fa-file-excel text-dark-green mr-3"></i>
+                                <div>
+                                    <p class="text-sm font-medium">Messdaten.xlsx</p>
+                                    <p class="text-xs text-gray-500">Bearbeitet: 14.03.2025, 09:15</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Benachrichtigungen -->
+                    <div class="card p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Neuigkeiten</h3>
+                            <button class="btn-green">Alle anzeigen</button>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex p-2">
+                                <i class="fas fa-envelope text-dark-green mr-3 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium">Neue E-Mail: Übungstermin verschoben</p>
+                                    <p class="text-xs text-gray-500">Von: Prof. Müller, vor 2 Stunden</p>
+                                </div>
+                            </li>
+                            <li class="flex p-2">
+                                <i class="fas fa-calendar-alt text-dark-green mr-3 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium">Kalender: Neue Vorlesung hinzugefügt</p>
+                                    <p class="text-xs text-gray-500">Digitale Systeme, Fr 09:00-10:30</p>
+                                </div>
+                            </li>
+                            <li class="flex p-2">
+                                <i class="fas fa-comment-alt text-dark-green mr-3 mt-1"></i>
+                                <div>
+                                    <p class="text-sm font-medium">Neuer Kommentar in Moodle</p>
+                                    <p class="text-xs text-gray-500">Kurs: C Programmierung, vor 1 Tag</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Termine -->
+                    <div class="card p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Wichtige Termine</h3>
+                            <button class="btn-green">Alle anzeigen</button>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex p-2 task-priority">
+                                <div>
+                                    <p class="text-sm font-medium">Abgabe: Elektrotechnik Übungsblatt</p>
+                                    <p class="text-xs text-gray-500">Heute, 23:59 Uhr</p>
+                                </div>
+                            </li>
+                            <li class="flex p-2 pl-3">
+                                <div>
+                                    <p class="text-sm font-medium">Präsentation: Digitaltechnik</p>
+                                    <p class="text-xs text-gray-500">Morgen, 14:15 Uhr</p>
+                                </div>
+                            </li>
+                            <li class="flex p-2 pl-3">
+                                <div>
+                                    <p class="text-sm font-medium">Zwischentest: Mathematik</p>
+                                    <p class="text-xs text-gray-500">20.03.2025, 10:00 Uhr</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row md:space-x-6">
+                    <!-- Linke Spalte: Meine Vorlesungen -->
+                    <div class="md:w-1/2">
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Meine Vorlesungen</h3>
+                                <button class="btn-green" id="toggleCoursesBtn">Alle anzeigen</button>
+                            </div>
+                            
+                            <div class="py-2">
+                                <!-- Hauptkurse (immer sichtbar) -->
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-bolt text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Grundlagen der Elektrotechnik</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-code text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">C-Programmierung</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-calculator text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Mathematik</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-microchip text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Digitaltechnik</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Versteckte Kurse -->
+                            <div class="hidden-courses" id="hiddenCourses">
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-atom text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Physik</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-flask text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Labor</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-language text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Englisch</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="course-item">
+                                    <div class="course-icon">
+                                        <i class="fas fa-brain text-dark-green"></i>
+                                    </div>
+                                    <div class="course-info">
+                                        <div class="font-medium">Lernstrategien</div>
+                                        <div class="text-xs text-gray-500">2. Semester</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rechte Spalte: Meine Aufgaben -->
+                    <div class="md:w-1/2 mt-6 md:mt-0">
+                        <div class="card p-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-800">Meine Aufgaben</h3>
+                                <button class="btn-green text-bright-green" onclick="window.open('https://planka.studapp.site', '_blank')">Zum Kanban-Board</button>
+                            </div>
+                            
+                            <div class="py-2">
+                                <div class="task-item task-in-progress">
+                                    <div class="font-medium">Laborprotokoll fertigstellen</div>
+                                    <div class="status-badge">In Arbeit</div>
+                                </div>
+                                
+                                <div class="task-item task-priority">
+                                    <div class="font-medium">Übungsaufgaben Elektrotechnik bearbeiten</div>
+                                    <div class="status-badge">Priorität</div>
+                                </div>
+                                
+                                <div class="task-item task-planned">
+                                    <div class="font-medium">Code-Beispiele durcharbeiten</div>
+                                    <div class="status-badge">Geplant</div>
+                                </div>
+                                
+                                <div class="task-item task-done">
+                                    <div class="font-medium">Vorlesungsnotizen digitalisieren</div>
+                                    <div class="status-badge">Erledigt</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Widget-Reihe 1 -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <!-- Zuletzt verwendete Dateien -->
-        <div class="card p-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Zuletzt verwendet</h3>
-                <button class="btn-green">Alle anzeigen</button>
-            </div>
-            <ul class="space-y-3">
-                <li class="flex items-center p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-file-pdf text-dark-green mr-3"></i>
-                    <div>
-                        <p class="text-sm font-medium">ET_Übung_4.pdf</p>
-                        <p class="text-xs text-gray-500">Bearbeitet: Heute, 14:30</p>
-                    </div>
-                </li>
-                <li class="flex items-center p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-file-word text-dark-green mr-3"></i>
-                    <div>
-                        <p class="text-sm font-medium">Laborprotokoll.docx</p>
-                        <p class="text-xs text-gray-500">Bearbeitet: Gestern, 16:42</p>
-                    </div>
-                </li>
-                <li class="flex items-center p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-file-excel text-dark-green mr-3"></i>
-                    <div>
-                        <p class="text-sm font-medium">Messdaten.xlsx</p>
-                        <p class="text-xs text-gray-500">Bearbeitet: 14.03.2025, 09:15</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Benachrichtigungen -->
-        <div class="card p-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Neuigkeiten</h3>
-                <button class="btn-green">Alle anzeigen</button>
-            </div>
-            <ul class="space-y-3">
-                <li class="flex p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-envelope text-dark-green mr-3 mt-1"></i>
-                    <div>
-                        <p class="text-sm font-medium">Neue E-Mail: Übungstermin verschoben</p>
-                        <p class="text-xs text-gray-500">Von: Prof. Müller, vor 2 Stunden</p>
-                    </div>
-                </li>
-                <li class="flex p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-calendar-alt text-dark-green mr-3 mt-1"></i>
-                    <div>
-                        <p class="text-sm font-medium">Kalender: Neue Vorlesung hinzugefügt</p>
-                        <p class="text-xs text-gray-500">Digitale Systeme, Fr 09:00-10:30</p>
-                    </div>
-                </li>
-                <li class="flex p-2 hover:bg-gray-50 rounded transition duration-200">
-                    <i class="fas fa-comment-alt text-dark-green mr-3 mt-1"></i>
-                    <div>
-                        <p class="text-sm font-medium">Neuer Kommentar in Moodle</p>
-                        <p class="text-xs text-gray-500">Kurs: C Programmierung, vor 1 Tag</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Termine -->
-        <div class="card p-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Wichtige Termine</h3>
-                <button class="btn-green">Alle anzeigen</button>
-            </div>
-            <ul class="space-y-3">
-                <li class="flex p-2 task-priority hover:bg-gray-50 rounded transition duration-200">
-                    <div>
-                        <p class="text-sm font-medium">Abgabe: Elektrotechnik Übungsblatt</p>
-                        <p class="text-xs text-gray-500">Heute, 23:59 Uhr</p>
-                    </div>
-                </li>
-                <li class="flex p-2 pl-3 hover:bg-gray-50 rounded transition duration-200">
-                    <div>
-                        <p class="text-sm font-medium">Präsentation: Digitaltechnik</p>
-                        <p class="text-xs text-gray-500">Morgen, 14:15 Uhr</p>
-                    </div>
-                </li>
-                <li class="flex p-2 pl-3 hover:bg-gray-50 rounded transition duration-200">
-                    <div>
-                        <p class="text-sm font-medium">Zwischentest: Mathematik</p>
-                        <p class="text-xs text-gray-500">20.03.2025, 10:00 Uhr</p>
-                    </div>
-                </li>
-            </ul>
+    <!-- Apps-Dropdown-Menü (wird angezeigt, wenn auf "Weitere Apps" geklickt wird) -->
+    <div id="appsMenu" class="hidden fixed bg-white rounded-lg shadow-lg p-3 z-10">
+        <div class="space-y-2">
+            <a href="https://calibre.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-book text-purple-500 mr-3"></i>
+                <span>Calibre-Web</span>
+            </a>
+            <a href="https://vscode.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-code text-blue-600 mr-3"></i>
+                <span>VS Code</span>
+            </a>
+            <a href="https://notes.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-sticky-note text-yellow-500 mr-3"></i>
+                <span>Standard Notes</span>
+            </a>
+            <a href="https://files.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-file text-green-500 mr-3"></i>
+                <span>Dateiserver</span>
+            </a>
+            <a href="https://wiki.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-book-open text-indigo-500 mr-3"></i>
+                <span>Wiki</span>
+            </a>
+            <a href="https://calendar.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-calendar text-red-500 mr-3"></i>
+                <span>Kalender</span>
+            </a>
+            <a href="https://planka.studapp.site" target="_blank" class="flex items-center p-2 hover:bg-gray-100 rounded">
+                <i class="fas fa-tasks text-orange-500 mr-3"></i>
+                <span>Planka Kanban</span>
+            </a>
         </div>
     </div>
 
-    <div class="flex flex-col md:flex-row md:space-x-6">
-        <!-- Linke Spalte: Meine Vorlesungen -->
-        <div class="md:w-1/2">
-            <div class="card p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Meine Vorlesungen</h3>
-                    <button class="btn-green" id="toggleCoursesBtn">Alle anzeigen</button>
-                </div>
-                
-                <div class="py-2">
-                    <!-- Hauptkurse (immer sichtbar) -->
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-bolt text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Grundlagen der Elektrotechnik</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-code text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">C-Programmierung</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-calculator text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Mathematik</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-microchip text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Digitaltechnik</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Versteckte Kurse -->
-                <div class="hidden-courses" id="hiddenCourses">
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-atom text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Physik</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-flask text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Labor</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-language text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Englisch</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                    
-                    <div class="course-item">
-                        <div class="course-icon">
-                            <i class="fas fa-brain text-dark-green"></i>
-                        </div>
-                        <div class="course-info">
-                            <div class="font-medium">Lernstrategien</div>
-                            <div class="text-xs text-gray-500">2. Semester</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Rechte Spalte: Meine Aufgaben -->
-        <div class="md:w-1/2 mt-6 md:mt-0">
-            <div class="card p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Meine Aufgaben</h3>
-                    <button class="btn-green text-bright-green">Zum Kanban-Board</button>
-                </div>
-                
-                <div class="py-2">
-                    <div class="task-item task-in-progress">
-                        <div class="font-medium">Laborprotokoll fertigstellen</div>
-                        <div class="status-badge">In Arbeit</div>
-                    </div>
-                    
-                    <div class="task-item task-priority">
-                        <div class="font-medium">Übungsaufgaben Elektrotechnik bearbeiten</div>
-                        <div class="status-badge">Priorität</div>
-                    </div>
-                    
-                    <div class="task-item task-planned">
-                        <div class="font-medium">Code-Beispiele durcharbeiten</div>
-                        <div class="status-badge">Geplant</div>
-                    </div>
-                    
-                    <div class="task-item task-done">
-                        <div class="font-medium">Vorlesungsnotizen digitalisieren</div>
-                        <div class="status-badge">Erledigt</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- JavaScript für die Dashboard-Funktionalität -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Funktionalität für die Begrüßungsfläche zum Aufklappen
-        const welcomeWidget = document.getElementById('welcomeWidget');
-        
-        welcomeWidget.addEventListener('click', function() {
-            this.classList.toggle('expanded');
-        });
-        
-        // Funktionalität für die Vorlesungen anzeigen/ausblenden mit Animation
-        const toggleCoursesBtn = document.getElementById('toggleCoursesBtn');
-        const hiddenCourses = document.getElementById('hiddenCourses');
-        
-        toggleCoursesBtn.addEventListener('click', function() {
-            const isExpanded = hiddenCourses.classList.contains('expanded');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Funktionalität für die Begrüßungsfläche zum Aufklappen
+            const welcomeWidget = document.getElementById('welcomeWidget');
             
-            if (isExpanded) {
-                hiddenCourses.classList.remove('expanded');
-                toggleCoursesBtn.textContent = 'Alle anzeigen';
-            } else {
-                hiddenCourses.classList.add('expanded');
-                toggleCoursesBtn.textContent = 'Weniger anzeigen';
-            }
+            welcomeWidget.addEventListener('click', function() {
+                this.classList.toggle('expanded');
+            });
+            
+            // Funktionalität für die Vorlesungen anzeigen/ausblenden mit Animation
+            const toggleCoursesBtn = document.getElementById('toggleCoursesBtn');
+            const hiddenCourses = document.getElementById('hiddenCourses');
+            
+            toggleCoursesBtn.addEventListener('click', function() {
+                const isExpanded = hiddenCourses.classList.contains('expanded');
+                
+                if (isExpanded) {
+                    hiddenCourses.classList.remove('expanded');
+                    toggleCoursesBtn.textContent = 'Alle anzeigen';
+                } else {
+                    hiddenCourses.classList.add('expanded');
+                    toggleCoursesBtn.textContent = 'Weniger anzeigen';
+                }
+            });
+            
+            // Funktionalität für das Apps-Dropdown-Menü
+            const moreAppsButton = document.getElementById('moreAppsButton');
+            const appsMenu = document.getElementById('appsMenu');
+            
+            moreAppsButton.addEventListener('click', function(e) {
+                e.stopPropagation(); // Verhindert, dass das Klicken auf den Button auch als Klick außerhalb gewertet wird
+                
+                // Position des Dropdown-Menüs neben dem Button
+                const buttonRect = moreAppsButton.getBoundingClientRect();
+                appsMenu.style.top = buttonRect.top + 'px';
+                appsMenu.style.left = (buttonRect.right + 10) + 'px';
+                
+                // Dropdown-Menü anzeigen/verbergen
+                appsMenu.classList.toggle('hidden');
+            });
+            
+            // Klick außerhalb des Menüs schließt es
+            document.addEventListener('click', function(e) {
+                if (!appsMenu.contains(e.target) && e.target !== moreAppsButton) {
+                    appsMenu.classList.add('hidden');
+                }
+            });
         });
-    });
-</script>
+        
+        // Logout-Bestätigungsfunktion
+        function confirmLogout() {
+            if (confirm('Möchtest du dich wirklich abmelden?')) {
+                console.log('Abmelden durchgeführt');
+                // Hier könnte der Logout-Prozess eingeleitet werden
+            }
+        }
+    </script>
+</body>
+</html>
